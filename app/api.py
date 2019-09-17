@@ -10,13 +10,11 @@ app.config["DEBUG"] = True
 def home():
     return "<h1>Distant Reading Archive</h1><p>This site is a prototype API for distant reading of science fiction novels.</p>"
 
-@app.route('/api/v1/redirect-test', methods=['GET'])
+@app.route('/api/v1/redirect-test', methods=['POST'])
 def api_filter():
-    params = request.args
-
-    base64_csv = params['csv']
-    test_url_index = params['testurl']
-    target_url_index = params['targeturl']
+    base64_csv = request.files['file']
+    test_url_index = request.form['testurl']
+    target_url_index = request.form['targeturl']
 
     return test_redirects(base64_csv, test_url_index, target_url_index)
 
