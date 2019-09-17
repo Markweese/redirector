@@ -1,6 +1,6 @@
 import flask
 from flask import request
-from .redirect_functions import test_redirects
+# from .redirect_functions import test_redirects
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -18,6 +18,6 @@ def api_filter():
     test_url_index = params['testurl']
     target_url_index = params['targeturl']
 
-    return test_redirects(base64_csv, test_url_index, target_url_index)
+    return "test_redirects(base64_csv, test_url_index, target_url_index)"
 
 app.run()
