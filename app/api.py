@@ -20,4 +20,5 @@ def api_filter():
 
     return "test_redirects(base64_csv, test_url_index, target_url_index)"
 
-app.run()
+if __name__ == '__main__':
+    app.run()
