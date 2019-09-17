@@ -1,9 +1,14 @@
 import csv
+import ssl
 import base64
 from time import sleep
 from flask import jsonify
 from urllib.parse import urlparse, unquote
 from urllib.request import urlopen, Request, HTTPError, URLError
+
+# SSL bypass
+ssl._create_default_https_context = ssl._create_unverified_context
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.3'}
 
 # {base64_csv, test_url_index target_url_index}
 # base64_csv takes the url encoded base64 csv string
