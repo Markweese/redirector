@@ -8,7 +8,19 @@
     let urls = {{ urls|safe }};
 
     urls.forEach(url => {
-      console.log(url);
+      let testURL = encodeURIComponent(url.testurl);
+      let targetURL = encodeURIComponent(url.targeturl);
+      let req = `http://127.0.0.1:5000/api/v1/test-redirect?testurl=${testURL}&targeturl=${targetURL}`;
+      let xhr = new XMLHttpRequest();
+
+      xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+              console.log(xhr.response);
+          }
+      }
+
+      xhr.open("GET", req);
+      xhr.send();
     })
   </script>
 {% endblock %}

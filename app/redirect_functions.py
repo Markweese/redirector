@@ -1,9 +1,10 @@
+import re
 import csv
 import ssl
 import json
 from time import sleep
 from flask import jsonify
-from urllib.parse import urlparse, unquote
+from urllib.parse import urlparse, unquote, quote
 from urllib.request import urlopen, Request, HTTPError, URLError
 
 # SSL bypass
@@ -35,10 +36,18 @@ def parse_urls(csv_file, test_url_index, target_url_index):
 # target_url takes the target url
 def test_redirect(test_url, target_url):
     output = {}
+    test_url = unquote(test_url)
+    target_url = unquote(target_url)
+
+    # Format the test_url
+    test_url_breadcrumb = quote(re.search(r'.com/.*\??', test_url).group(0))
+    test_url = re.sub(r'.com/.*\??', test_url_breadcrumb, test_url)
 
     if len(urlparse(test_url).scheme) > 0:
         # swap url
         url = test_url
+        # Set url output
+        output['url'] = url
 
         # send request
         try:
@@ -47,21 +56,24 @@ def test_redirect(test_url, target_url):
             status = open.getcode()
             final = open.geturl()
 
-            # check if end url matches the target
+            # Set status output
+            output['status'] = status
+
+            # Check if end url matches the target
             if final.split('.com')[1] == target_url.split('.com')[1]:
-                correct_redirect = True;
+                # Set matches output
+                output['matches'] = True;
             else:
-                correct_redirect = False;
+                # Set matches output
+                output['matches'] = False;
 
         # catch 404s and whatever else
         except HTTPError as e:
-            output['url'] = url
+            # Set status output
             output['status'] = e.code
-            output['matches'] = correct_redirect
 
         except URLError as e:
-            output['url'] = url
+            # Set status output
             output['status'] = e.code
-            output['matches'] = correct_redirect
 
-    return jsonify(output)
+    return json.dumps(output)
