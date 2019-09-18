@@ -1,6 +1,6 @@
 import flask
 from flask import request, render_template
-from redirect_functions import test_redirect, parse_urls
+from .redirect_functions import test_redirect, parse_urls
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
