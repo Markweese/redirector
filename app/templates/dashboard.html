@@ -1,0 +1,56 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <form onsubmit='submitForm(event)' action="/api/v1/redirect-test" method="POST" enctype="multipart/form-data">
+            <label>
+                Upload redirect CSV
+            </label>
+            <input name='file' type='file' id='fileupload' />
+
+            <label>
+                Broken URL Column
+            </label>
+            <select id='colBroken' class='column-selector' name='testurl'>
+            </select>
+
+            <label>
+                Target URL Column
+            </label>
+            <select id='colTarget' class='column-selector' name='targeturl'>
+            </select>
+
+            <button type="submit">
+                Generate Redirects
+            </button>
+        </form>
+    </body>
+    <script>
+        let colSelectors = document.querySelectorAll('.column-selector');
+        let alph = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+
+        for(let colSelector of colSelectors) {
+            alph.forEach((letter, index) => {
+                let newNode = document.createElement("option");
+
+                // populate dropdowns with every letter in alphabet
+                newNode.value = index;
+                newNode.innerHTML = letter;
+                colSelector.appendChild(newNode);
+            });
+        }
+
+        function submitForm(event) {
+            let file = document.getElementById('fileupload').files[0];
+
+            if(file && file.name.split('.')[1] === 'csv') {
+                let button = document.querySelector('button');
+                button.style.color = '#efefef';
+                button.style.backgroundColor = '#03b1fc';
+            } else {
+                event.preventDefault();
+                alert('Please submit a file in CSV format');
+            }
+        }
+    </script>
+</html>
