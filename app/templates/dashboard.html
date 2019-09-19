@@ -1,11 +1,122 @@
 {% extends 'layout.html' %}
+{% block style %}
+  <style>
+    .dashboard {
+      padding: 0px 15px;
+    }
+
+    .dashboard > h1 {
+      font-weight: normal;
+      font-family: Helvetica, sans-serif;
+    }
+
+    .dashboard--progress-container {
+      height: 5px;
+      position: relative;
+      border-radius: 5px;
+      background-color: #ffffff;
+    }
+
+    .dashboard--progress-container  > .progress-bar {
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 5px;
+      border-radius: 5px;
+      position: absolute;
+      background-color: #bababa;
+    }
+
+    .dashboard > .dashboard--filter-button-container {
+      display: none;
+      margin-top: 30px;
+    }
+
+    .dashboard > .dashboard--filter-button-container.--active {
+      display: block;
+    }
+
+    .dashboard--filter-button-container > .dashboard--filter-button {
+      color: #efefef;
+      padding: 10px 50px;
+      text-align: center;
+      margin: 0 5px 5px 0;
+      border-radius: 10px;
+      display: inline-block;
+      background-color: #bababa;
+    }
+
+    .dashboard--filter-button-container > .dashboard--filter-button:hover, .dashboard--filter-button-container > .dashboard--filter-button.--active {
+      background-color: #4096ff;
+    }
+
+    .dashboard > .output-list {
+      padding-left: 0px;
+      list-style-type: none;
+    }
+
+    .output-list > .output-list--item {
+      margin-top: 10px;
+      overflow-x: scroll;
+      padding: 30px 0 30px 30px;
+      background-color: #ffffff;
+      font-family: Helvetica, sans-serif;
+    }
+
+    .output-list > .output-list--item.--hidden {
+      display: none;
+    }
+
+    .output-list--item > a {
+      color: #4096ff;
+      font-size: 20px;
+      white-space: nowrap;
+      font-weight: normal;
+      text-decoration: underline;
+      font-family: Helvetica, sans-serif;
+    }
+
+    .output-list--item > p {
+      margin-bottom: 0px;
+    }
+
+    .output-list--item > p > .--mismatched > a {
+      color: #4096ff;
+    }
+
+    .output-list > .item--passed {
+      border-left: 5px solid #55b055;
+    }
+
+    .output-list > .item--failed {
+      border-left: 5px solid #b04d4d;
+    }
+
+    .output-list > .item--flagged {
+      border-left: 5px solid #c9c459;
+    }
+  </style>
+{% endblock %}
 {% block content %}
-    <h1>Dashboard</h1>
-    <p>{{urls}}</p>
+    <div class='dashboard'>
+      <h1>Redirect Report</h1>
+      <div class='dashboard--progress-container'>
+        <div id='progressBar' class='progress-bar'></div>
+      </div>
+      <div class='dashboard--filter-button-container'>
+        <p>Filters:</p>
+      </div>
+      <p id='itemCount'></p>
+      <ul class='output-list' id='outputList'>
+      </ul>
+    </div>
 {% endblock %}
 {% block script %}
   <script>
     let urls = {{ urls|safe }};
+    let progress = 0;
+    let errorCodes = ['ALL'];
+    let length = urls.length;
 
     urls.forEach(url => {
       let testURL = encodeURIComponent(url.testurl);
@@ -15,12 +126,117 @@
 
       xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
-              console.log(xhr.response);
+              updateDom(xhr.response);
           }
       }
 
       xhr.open("GET", req);
       xhr.send();
-    })
+    });
+
+    function updateDom(data) {
+      progress ++;
+
+      const res = JSON.parse(data);
+      let newListItem = document.createElement('li');
+      let outputList = document.getElementById('outputList');
+      let progressBar = document.getElementById('progressBar');
+      let progressPercentage = `${Math.round((progress/length) * 100)}%`;
+      let mismatchMessage = !res.matches ? ` | <span class='--mismatched'>URL DOESN'T MATCH <a href='${res.target}'>TARGET URL</a></span>` : '';
+
+      // Insert new list element
+      newListItem.dataset.code = res.status;
+      newListItem.classList.add('output-list--item');
+      newListItem.innerHTML = `<a href='${res.url}'>${res.url}</a><p><strong>${res.status}</strong>${mismatchMessage}</p>`
+
+      // Style list item based on status & matching
+      if(res.status == 200) {
+        newListItem.classList.add('item--passed');
+
+        if(!res.matches) {
+          newListItem.classList.add('--mismatched')
+        }
+      } else if(res.status == 301) {
+        newListItem.classList.add('item--flagged');
+      } else {
+        newListItem.classList.add('item--failed');
+      }
+
+      // Add it to the DOM
+      outputList.appendChild(newListItem);
+
+      // Populate codes array for filter generation
+      if(res.status) {
+        if(!errorCodes.includes(res.status)) {
+          errorCodes.push(res.status);
+        }
+      }
+
+      // Show filters once loaded
+      if(progress === length) {
+        activateFilters();
+      }
+
+      // Update progress bar
+      progressBar.style.width = progressPercentage;
+    }
+
+    function activateFilters() {
+      const filterContainer = document.querySelector('.dashboard--filter-button-container');
+
+      errorCodes.forEach(code => {
+        let newFilter = document.createElement('div');
+
+        newFilter.id = code;
+        newFilter.innerHTML = code;
+        newFilter.classList.add('dashboard--filter-button');
+
+        // Default to show all results
+        if(code === 'ALL') {
+          newFilter.classList.add('--active');
+        }
+
+        newFilter.addEventListener('click', (ev) => {
+          filterResults(ev);
+        });
+
+        filterContainer.append(newFilter);
+      });
+
+      // Show filters
+      filterContainer.classList.add('--active');
+
+      // Show item item count
+      document.getElementById('itemCount').innerHTML = `${length} Items`;
+    }
+
+    function filterResults(ev){
+      let count = 0;
+      const filter = ev.target.id;
+      const allItems = document.querySelectorAll('.output-list--item');
+
+      // Update filter displays
+      document.querySelector('.dashboard--filter-button.--active').classList.remove('--active');
+      ev.target.classList.add('--active');
+
+      // Toggle element displays
+      if(filter !== 'ALL') {
+        for(item of allItems) {
+          if(filter !== item.dataset.code){
+            item.classList.add('--hidden');
+          } else {
+            count ++;
+            item.classList.remove('--hidden');
+          }
+        }
+      } else {
+        for(item of allItems) {
+          count ++;
+          item.classList.remove('--hidden');
+        }
+      }
+
+      document.getElementById('itemCount').innerHTML = `${count} Items`;
+    }
   </script>
 {% endblock %}

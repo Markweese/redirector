@@ -1,8 +1,38 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <style>
+      html {
+        color: #474747;
+        background-color: #efefef;
+        font-family: Helvetica, sans-serif;
+      }
+
+      body {
+        margin-top: 150px;
+      }
+
+      .nav {
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 15px;
+        position: fixed;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+    </style>
+    {% block style %}
+    {% endblock %}
   </head>
   <body>
+    <div class='nav'>
+      <div class='button'>
+        <a href='/'>
+          <img src='{{ url_for("static", filename = "images/redirector-inline.png") }}' width='75px' height='75px'/>
+        </a>
+      </div>
+    </div>
     {% block content %}
     {% endblock %}
   </body>
