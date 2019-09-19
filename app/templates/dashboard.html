@@ -147,7 +147,7 @@
       // Insert new list element
       newListItem.dataset.code = res.status;
       newListItem.classList.add('output-list--item');
-      newListItem.innerHTML = `<a href='${res.url}'>${res.url}</a><p><strong>${res.status}</strong>${mismatchMessage}</p>`
+      newListItem.innerHTML = `<a target='_blank' href='${res.url}'>${res.url}</a><p><strong>${res.status}</strong>${mismatchMessage}</p>`
 
       // Style list item based on status & matching
       if(res.status == 200) {
