@@ -49,7 +49,7 @@ def test_redirect(test_url, target_url):
         # Set test url output
         output['url'] = url
         # Set target url output
-        output['target'] = '{}{}'.format(test_url.split('.com')[0], target_url.split('.com')[1])
+        output['target'] = '{}.com{}'.format(test_url.split('.com')[0], target_url.split('.com')[1])
 
         # send request
         try:
