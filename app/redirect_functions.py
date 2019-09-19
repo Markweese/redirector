@@ -41,8 +41,7 @@ def test_redirect(test_url, target_url):
 
     # Format the test_url
     test_url_breadcrumb = quote(re.search(r'.com\/(.*)\?', test_url).group(0))
-    marks_first_lookahead = re.sub(r'%3F(?=$)', '?',test_url_breadcrumb)
-    test_url = re.sub(r'.com\/(.*)\?', marks_first_lookahead, test_url)
+    test_url = re.sub(r'.com\/(.*)\?', test_url_breadcrumb, test_url)
 
     if len(urlparse(test_url).scheme) > 0:
         # swap url
