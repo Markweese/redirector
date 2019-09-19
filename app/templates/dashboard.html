@@ -121,7 +121,7 @@
     urls.forEach(url => {
       let testURL = encodeURIComponent(url.testurl);
       let targetURL = encodeURIComponent(url.targeturl);
-      let req = `http://127.0.0.1:5000/api/v1/test-redirect?testurl=${testURL}&targeturl=${targetURL}`;
+      let req = `https://boiling-lowlands-96279.herokuapp.com/api/v1/test-redirect?testurl=${testURL}&targeturl=${targetURL}`;
       let xhr = new XMLHttpRequest();
 
       xhr.onreadystatechange = function() {
