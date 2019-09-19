@@ -142,7 +142,7 @@
       let outputList = document.getElementById('outputList');
       let progressBar = document.getElementById('progressBar');
       let progressPercentage = `${Math.round((progress/length) * 100)}%`;
-      let mismatchMessage = !res.matches ? ` | <span class='--mismatched'>URL DOESN'T MATCH <a href='${res.target}'>TARGET URL</a></span>` : '';
+      let mismatchMessage = !res.matches ? ` | <span class='--mismatched'>URL DOESN'T MATCH <a target='_blank' href='${res.target}'>TARGET URL</a></span>` : '';
 
       // Insert new list element
       newListItem.dataset.code = res.status;
