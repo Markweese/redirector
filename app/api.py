@@ -12,10 +12,11 @@ def home():
 
 @app.route('/api/v1/parse-csv', methods=['POST'])
 def api_filter():
+    base_url = request.form['url']
     csv_file = request.files['file']
     test_url_index = request.form['testurl']
     target_url_index = request.form['targeturl']
-    parsed_urls = parse_urls(csv_file, test_url_index, target_url_index)
+    parsed_urls = parse_urls(csv_file, test_url_index, target_url_index, base_url)
 
     return render_template("dashboard.html", urls=parsed_urls)
 

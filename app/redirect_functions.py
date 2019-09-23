@@ -15,19 +15,22 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML
 # csv_file takes the csv file
 # test_url_index takes the test urls column number
 # target_url_index takes the target urls column number
-def parse_urls(csv_file, test_url_index, target_url_index):
+def parse_urls(csv_file, test_url_index, target_url_index, base_url):
     csv_string = csv_file.stream.read().decode("utf-8").splitlines()
     test_url_index = int(test_url_index)
     target_url_index = int(target_url_index)
+    base_url if not base_url.endswith('/') else base_url[:-1]
 
     output = []
     csv_reader = csv.reader(csv_string, delimiter=',')
 
     for row in csv_reader:
         if len(row) > 0:
-            if len(urlparse(row[test_url_index]).scheme) > 0:
+            if len(row[test_url_index].split('/')) > 0:
                 # swap url
-                output.append({'testurl':row[test_url_index], 'targeturl':row[target_url_index]})
+                test_prepended = row[test_url_index] if row[test_url_index].startswith('/') else row[test_url_index][:1]
+                test_url = '{}{}'.format(base_url, test_prepended)
+                output.append({'testurl':test_url, 'targeturl':row[target_url_index]})
 
     return json.dumps(output)
 
@@ -36,8 +39,6 @@ def parse_urls(csv_file, test_url_index, target_url_index):
 # target_url takes the target url
 def test_redirect(test_url, target_url):
     output = {}
-    test_url = unquote(test_url)
-    target_url = unquote(target_url)
 
     if len(urlparse(test_url).scheme) > 0:
         # swap url
