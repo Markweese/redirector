@@ -39,10 +39,6 @@ def test_redirect(test_url, target_url):
     test_url = unquote(test_url)
     target_url = unquote(target_url)
 
-    # Format the test_url
-    test_url_breadcrumb = quote(re.search(r'.com/.*\??', test_url).group(0))
-    test_url = re.sub(r'.com/.*\??', test_url_breadcrumb, test_url)
-
     if len(urlparse(test_url).scheme) > 0:
         # swap url
         url = test_url
