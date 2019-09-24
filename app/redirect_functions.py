@@ -25,16 +25,15 @@ def parse_urls(csv_file, test_url_index, target_url_index, base_url):
     csv_reader = csv.reader(csv_string, delimiter=',')
 
     for row in csv_reader:
-        if len(row) > 0:
-            if len(row[test_url_index].split('/')) > 0:
-                # prepend breadcrumb with /
-                test_prepended = row[test_url_index] if row[test_url_index].startswith('/') else '/' + row[test_url_index]
-                target_prepended = row[target_url_index] if row[test_url_index].startswith('/') else '/' + row[target_url_index]
-                # set urls
-                test_url = '{}{}'.format(base_url_clean, test_prepended)
-                target_url = row[target_url_index] if row[target_url_index].startswith('http') else '{}{}'.format(base_url_clean, target_prepended)
+        if len(row) >= (test_url_index + 1):
+            # prepend breadcrumb with /
+            test_prepended = row[test_url_index] if row[test_url_index].startswith('/') else '/' + row[test_url_index]
+            target_prepended = row[target_url_index] if row[test_url_index].startswith('/') else '/' + row[target_url_index]
+            # set urls
+            test_url = '{}{}'.format(base_url_clean, test_prepended)
+            target_url = row[target_url_index] if row[target_url_index].startswith('http') else '{}{}'.format(base_url_clean, target_prepended)
 
-                output.append({'testurl':test_url, 'targeturl':target_url})
+            output.append({'testurl':test_url, 'targeturl':target_url})
 
     return json.dumps(output)
 
