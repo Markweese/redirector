@@ -19,7 +19,7 @@ def parse_urls(csv_file, test_url_index, target_url_index, base_url):
     csv_string = csv_file.stream.read().decode("utf-8").splitlines()
     test_url_index = int(test_url_index)
     target_url_index = int(target_url_index)
-    base_url if not base_url.endswith('/') else base_url[:-1]
+    base_url_clean = base_url if not base_url.endswith('/') else base_url[:-1]
 
     output = []
     csv_reader = csv.reader(csv_string, delimiter=',')
@@ -31,8 +31,8 @@ def parse_urls(csv_file, test_url_index, target_url_index, base_url):
                 test_prepended = row[test_url_index] if row[test_url_index].startswith('/') else '/' + row[test_url_index]
                 target_prepended = row[target_url_index] if row[test_url_index].startswith('/') else '/' + row[target_url_index]
                 # set urls
-                test_url = '{}{}'.format(base_url, test_prepended)
-                target_url = row[target_url_index] if row[target_url_index].startswith('http') else '{}{}'.format(base_url, target_prepended)
+                test_url = '{}{}'.format(base_url_clean, test_prepended)
+                target_url = row[target_url_index] if row[target_url_index].startswith('http') else '{}{}'.format(base_url_clean, target_prepended)
 
                 output.append({'testurl':test_url, 'targeturl':target_url})
 
