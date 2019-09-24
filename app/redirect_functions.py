@@ -27,10 +27,14 @@ def parse_urls(csv_file, test_url_index, target_url_index, base_url):
     for row in csv_reader:
         if len(row) > 0:
             if len(row[test_url_index].split('/')) > 0:
-                # swap url
-                test_prepended = row[test_url_index] if row[test_url_index].startswith('/') else row[test_url_index][:1]
+                # prepend breadcrumb with /
+                test_prepended = row[test_url_index] if row[test_url_index].startswith('/') else '/' + row[test_url_index]
+                target_prepended = row[target_url_index] if row[test_url_index].startswith('/') else '/' + row[target_url_index]
+                # set urls
                 test_url = '{}{}'.format(base_url, test_prepended)
-                output.append({'testurl':test_url, 'targeturl':row[target_url_index]})
+                target_url = row[target_url_index] if row[target_url_index].startswith('http') else '{}{}'.format(base_url, target_prepended)
+
+                output.append({'testurl':test_url, 'targeturl':target_url})
 
     return json.dumps(output)
 
