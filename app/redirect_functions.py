@@ -41,6 +41,8 @@ def parse_urls(csv_file, test_url_index, target_url_index, base_url):
 # test_url takes the test url
 # target_url takes the target url
 def test_redirect(test_url, target_url):
+    print(test_url)
+    print(target_url)
     output = {}
 
     if len(urlparse(test_url).scheme) > 0:
@@ -62,7 +64,7 @@ def test_redirect(test_url, target_url):
             output['status'] = status
 
             # Check if end url matches the target
-            if final == target_url:
+            if urlparse(final).path in target_url:
                 # Set matches output
                 output['matches'] = True;
             else:
