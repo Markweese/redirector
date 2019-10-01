@@ -26,11 +26,12 @@ def parse_urls(csv_file, test_url_index, target_url_index, base_url):
 
     for row in csv_reader:
         if len(row) >= (test_url_index + 1):
+            print(row[test_url_index])
             # prepend breadcrumb with /
             test_prepended = row[test_url_index] if row[test_url_index].startswith('/') else '/' + row[test_url_index]
             target_prepended = row[target_url_index] if row[test_url_index].startswith('/') else '/' + row[target_url_index]
             # set urls
-            test_url = '{}{}'.format(base_url_clean, test_prepended)
+            test_url = row[test_url_index] if row[test_url_index].startswith('http') else '{}{}'.format(base_url_clean, test_prepended)
             target_url = row[target_url_index] if row[target_url_index].startswith('http') else '{}{}'.format(base_url_clean, target_prepended)
 
             output.append({'testurl':test_url, 'targeturl':target_url})
@@ -49,7 +50,7 @@ def test_redirect(test_url, target_url):
         # Set test url output
         output['url'] = url
         # Set target url output
-        output['target'] = '{}.com{}'.format(test_url.split('.com')[0], target_url.split('.com')[1])
+        output['target'] = target_url
 
         # send request
         try:
@@ -62,7 +63,7 @@ def test_redirect(test_url, target_url):
             output['status'] = status
 
             # Check if end url matches the target
-            if final.split('.com')[1] == target_url.split('.com')[1]:
+            if final == target_url:
                 # Set matches output
                 output['matches'] = True;
             else:
