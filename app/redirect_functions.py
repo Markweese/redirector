@@ -26,7 +26,6 @@ def parse_urls(csv_file, test_url_index, target_url_index, base_url):
 
     for row in csv_reader:
         if len(row) >= (test_url_index + 1):
-            print(row[test_url_index])
             # prepend breadcrumb with /
             test_prepended = row[test_url_index] if row[test_url_index].startswith('/') else '/' + row[test_url_index]
             target_prepended = row[target_url_index] if row[test_url_index].startswith('/') else '/' + row[target_url_index]

@@ -23,6 +23,10 @@
     background-color: #4096ff;
   }
 
+  span {
+    font-size: 12px;
+  }
+
   button:hover {
     background-color: #4083dd;
   }
@@ -31,27 +35,26 @@
 {% block content %}
 <form onsubmit='submitForm(event)' action="/api/v1/parse-csv" method="POST" enctype="multipart/form-data">
     <label>
-        Full Base URL
+        Base URL <span>If your CSV just includes URL breadcrumbs, please provide this field</span>
     </label>
     <input type="url" name="url" id="url"
        placeholder="http(s)://www.example.com/"
-       pattern="https?://.*\..*/?" size="30"
-       required>
+       pattern="https?://.*\..*/?" size="30">
     <label>
         Upload redirect CSV
     </label>
-    <input name='file' type='file' id='fileupload' />
+    <input name='file' type='file' id='fileupload' required/>
 
     <label>
         Broken URL Column
     </label>
-    <select id='colBroken' class='column-selector' name='testurl'>
+    <select id='colBroken' class='column-selector' name='testurl' required>
     </select>
 
     <label>
         Target URL Column
     </label>
-    <select id='colTarget' class='column-selector' name='targeturl'>
+    <select id='colTarget' class='column-selector' name='targeturl' required>
     </select>
 
     <button type="submit">
