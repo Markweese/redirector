@@ -41,8 +41,6 @@ def parse_urls(csv_file, test_url_index, target_url_index, base_url):
 # test_url takes the test url
 # target_url takes the target url
 def test_redirect(test_url, target_url):
-    print(test_url)
-    print(target_url)
     output = {}
 
     if len(urlparse(test_url).scheme) > 0:
